@@ -116,15 +116,15 @@ describe('OpenCode adapter', () => {
     })
   })
 
-  it('returns capture text and the structured result', async () => {
+  it('returns capture text without an output payload', async () => {
     await withHarness(async ({ tools, directory }) => {
       const tool = toolNamed(tools, 'screenshot_screen')
       const result = await tool.execute({}, {})
 
       expect(typeof result.content).toBe('string')
       expect(result.content).toContain('Saved screen screenshot to')
-      expect(result.output).toMatchObject({ captureType: 'screen' })
-      expect((result.output as { path: string }).path.startsWith(directory)).toBe(true)
+      expect(result.content).toContain(directory)
+      expect('output' in result).toBe(false)
     })
   })
 
