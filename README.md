@@ -1,4 +1,4 @@
-# dsh-screenshot-master
+# screenshot-master
 
 Screenshot capture for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) and
 [OpenCode](https://opencode.ai). Captures the full screen, one display, or one application window, saves a PNG, and
@@ -45,7 +45,7 @@ Add the directory to `opencode.json(c)`. OpenCode resolves the server part from 
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["/absolute/path/to/dsh-screenshot-master"]
+  "plugins": ["/absolute/path/to/screenshot-master"]
 }
 ```
 
@@ -54,7 +54,7 @@ The three tools appear in the next session. Configuration comes from the plugin 
 ```jsonc
 {
   "plugins": [
-    { "package": "/absolute/path/to/dsh-screenshot-master", "options": { "outputDir": "D:/captures" } }
+    { "package": "/absolute/path/to/screenshot-master", "options": { "outputDir": "D:/captures" } }
   ]
 }
 ```
@@ -77,14 +77,14 @@ All keys are optional. Set them on the plugin row, in the OpenCode options objec
 
 | Key | Environment | Default | Meaning |
 | --- | --- | --- | --- |
-| `outputDir` | `DSH_SCREENSHOT_OUTPUT_DIR` | `~/.dsh/screenshots` | Directory for the PNG files, created when missing. `~`, `%VAR%`, `$VAR` expanded. |
+| `outputDir` | `DSH_SCREENSHOT_OUTPUT_DIR` | `%USERPROFILE%\Pictures\Screenshots` (Windows), `~/Desktop` (macOS) | Directory for the PNG files, created when missing. `~`, `%VAR%`, `$VAR` expanded. |
 | `windowFallback` | `DSH_SCREENSHOT_WINDOW_FALLBACK` | `true` | Windows: retry a failed window capture by cropping the desktop rectangle. Labelled `desktop-region`. |
 | `allowUniformCaptures` | `DSH_SCREENSHOT_ALLOW_UNIFORM` | `false` | Accept a single-colour image. Off because that is what a failed capture looks like. |
 | `timeoutMs` | `DSH_SCREENSHOT_TIMEOUT_MS` | `30000` | Time budget per native capture, clamped to 1 000–300 000 ms. |
 | `keepTempFiles` | `DSH_SCREENSHOT_KEEP_TEMP` | `false` | Keep the `.partial` file for debugging. |
 | `powershellPath` | `DSH_SCREENSHOT_POWERSHELL` | system Windows PowerShell | Windows: interpreter that runs the capture scripts. |
 | `windowsScriptDir` | `DSH_SCREENSHOT_WINDOWS_SCRIPT_DIR` | bundled `lib/platforms/scripts/windows` | Windows: override the `.ps1` location. |
-| `macosHelperPath` | `DSH_SCREENSHOT_MACOS_HELPER` | `native/macos/build/dsh-screenshot-helper` | macOS: explicit helper binary. |
+| `macosHelperPath` | `DSH_SCREENSHOT_MACOS_HELPER` | `native/macos/build/screenshot-helper` | macOS: explicit helper binary. |
 | `macosHelperDir` | – | – | Reserved for relocated helper layouts. |
 
 Booleans accept `true`/`false`/`1`/`0`/`yes`/`no`/`on`/`off`. Unknown keys are ignored, so a profile written for a
@@ -118,7 +118,7 @@ the call fails; it never substitutes another image.
 
 ```json
 {
-  "path": "C:\\Users\\me\\.dsh\\screenshots\\screen-display0-20261027-201500-123-00-a1b2c3d4.png",
+  "path": "C:\\Users\\me\\Pictures\\Screenshots\\firefox-20261027-201500-123-00-a1b2c3d4.png",
   "bytes": 836177,
   "width": 1920,
   "height": 1080,
@@ -153,11 +153,12 @@ Every error carries a hint appended to the model-facing message.
 
 ## Output files
 
-- **Name**: `<type>-<label>-<YYYYMMDD>-<HHMMSS>-<mmm>-<attempt>-<random>.png`, local time, ASCII only. Label comes
-  from the window title or application name, `[a-z0-9-]`, at most 40 characters.
+- **Name**: `<app>-<YYYYMMDD>-<HHMMSS>-<mmm>-<attempt>-<random>.png`, local time, ASCII only. The label is the
+  application name (`desktop` for a screen capture), `[a-z0-9-]`, at most 40 characters. No `screen`, `window`, or
+  `displayN` prefix.
 - **Unique**: the final file is created with the `wx` flag. A collision moves to the next candidate, up to 8 tries.
 - **Absolute path**: relative values resolve against the process working directory.
-- **Temporary**: native code writes `.dsh-screenshot-<token>.partial`, which is verified, copied, and removed. On
+- **Temporary**: native code writes `.screenshot-<token>.partial`, which is verified, copied, and removed. On
   failure it is removed too, unless `keepTempFiles` is on. Nothing else in the directory is touched.
 - **Verified before success**: file exists and is non-empty; PNG signature, header and chunk CRCs valid; it decodes
   to non-zero dimensions; not uniform unless allowed; dimensions match what the backend reported.
@@ -209,7 +210,7 @@ CI runs on GitHub-hosted runners: unit on Windows and macOS across Node 22 and 2
 - Windows screen, window, and enumeration capture: passed by the real-capture suite.
 - Pixel fidelity, border cropping, and the no-compositing PNG conversion: passed by the fidelity tests.
 - macOS screen and window capture through ScreenCaptureKit: passed in CI on `macos-latest`.
-- Unit suite: 185 tests, passing locally and in CI.
+- Unit suite: 187 tests, passing locally and in CI.
 
 Do not infer macOS support from compilation, unit tests, or the presence of a workflow file. It is verified because
 a hosted macOS runner captured a real screen and a real window.

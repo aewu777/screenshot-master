@@ -23,7 +23,7 @@ import { createRuntime } from '../runtime.js'
 import type { JsonSchemaNode, ToolDefinition } from '../toolkit.js'
 import { buildToolDefinitions } from '../tools.js'
 
-export const OPENCODE_PLUGIN_ID = 'dsh-screenshot-master'
+export const OPENCODE_PLUGIN_ID = 'screenshot-master'
 
 /** A content part OpenCode accepts as a tool result. */
 export interface OpencodeTextContent {
@@ -158,7 +158,7 @@ export async function setup(
 ): Promise<OpencodeSetupResult> {
   if (!ctx || typeof ctx !== 'object' || !ctx.tool || typeof ctx.tool.transform !== 'function') {
     throw new Error(
-      'dsh-screenshot-master: the OpenCode plugin context has no tool domain (ctx.tool.transform).',
+      'screenshot-master: the OpenCode plugin context has no tool domain (ctx.tool.transform).',
     )
   }
 

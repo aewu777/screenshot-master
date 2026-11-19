@@ -43,9 +43,9 @@ export function createRuntime(
   rawConfig: Record<string, unknown> = {},
   options: CreateRuntimeOptions = {},
 ): Runtime {
-  const config = resolveConfig(rawConfig ?? {})
   const logger: Logger = options.logger ?? silentLogger
   const platform = options.platform ?? process.platform
+  const config = resolveConfig(rawConfig ?? {}, process.env, platform)
 
   if (!isSupportedPlatform(platform)) {
     logger.warn(

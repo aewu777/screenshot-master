@@ -79,7 +79,7 @@ const LABEL_PATTERN = /[^A-Za-z0-9]+/g
  * emoji or 300 characters of text, so anything outside `[A-Za-z0-9]` is
  * replaced and the result is truncated.
  */
-export function sanitizeLabel(input: string | undefined, fallback = 'window'): string {
+export function sanitizeLabel(input: string | undefined, fallback = 'screenshot'): string {
   if (!input) return fallback
   const cleaned = input
     .normalize('NFKD')
@@ -102,17 +102,21 @@ export function timestampComponent(at: Date): string {
 }
 
 export interface FileNameInput {
-  kind: 'screen' | 'window'
+  /** Application name, or `desktop` for a screen capture. */
   label?: string
   at: Date
   attempt: number
   random: string
 }
 
-/** Build one candidate filename. Uniqueness is enforced when it is written. */
+/**
+ * Build one candidate filename: `<app>-<timestamp>-<attempt>-<random>.png`.
+ *
+ * There is no `screen`, `window`, or `displayN` prefix. The label carries the
+ * application name; the rest keeps names unique and sortable.
+ */
 export function buildFileName(input: FileNameInput): string {
-  const parts: string[] = [input.kind]
-  if (input.label) parts.push(sanitizeLabel(input.label))
+  const parts: string[] = [sanitizeLabel(input.label)]
   parts.push(timestampComponent(input.at))
   parts.push(String(input.attempt).padStart(2, '0'))
   parts.push(input.random)
@@ -125,7 +129,7 @@ export function randomToken(bytes = 4): string {
 
 /** Path of the intermediate file the backend writes. Always inside `outputDir`. */
 export function partialPath(outputDir: string, token: string): string {
-  return path.join(outputDir, `.dsh-screenshot-${token}.partial`)
+  return path.join(outputDir, `.screenshot-${token}.partial`)
 }
 
 /** Create the output directory, failing with an actionable error. */
@@ -156,7 +160,6 @@ export interface CommitResult {
 
 export interface CommitOptions {
   outputDir: string
-  kind: 'screen' | 'window'
   label?: string | undefined
   data: Buffer
   at: Date
@@ -175,7 +178,6 @@ export async function commitScreenshot(options: CommitOptions): Promise<CommitRe
 
   for (let attempt = 0; attempt < MAX_NAME_ATTEMPTS; attempt += 1) {
     const fileName = buildFileName({
-      kind: options.kind,
       ...(options.label ? { label: options.label } : {}),
       at: options.at,
       attempt,

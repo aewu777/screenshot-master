@@ -271,8 +271,7 @@ export class ScreenshotService {
 
       const committed = await commitScreenshot({
         outputDir,
-        kind: 'screen',
-        label: outcome.display ? `display${outcome.display.index}` : undefined,
+        label: 'desktop',
         data: validated.data,
         at,
         random: this.#random,
@@ -331,8 +330,7 @@ export class ScreenshotService {
         this.#assertReportedDimensions(outcome, validated.stats)
         const committed = await commitScreenshot({
           outputDir,
-          kind: 'window',
-          label: outcome.window?.title || outcome.window?.app || windowId,
+          label: outcome.window?.app || outcome.window?.title || windowId,
           data: validated.data,
           at,
           random: this.#random,
@@ -379,8 +377,7 @@ export class ScreenshotService {
         this.#assertReportedDimensions(fallbackOutcome, validated.stats)
         const committed = await commitScreenshot({
           outputDir,
-          kind: 'window',
-          label: fallbackOutcome.window?.title || fallbackOutcome.window?.app || windowId,
+          label: fallbackOutcome.window?.app || fallbackOutcome.window?.title || windowId,
           data: validated.data,
           at,
           random: this.#random,

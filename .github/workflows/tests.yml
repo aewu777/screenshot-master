@@ -1,6 +1,6 @@
 name: tests
 
-# Windows and macOS verification for dsh-screenshot-master.
+# Windows and macOS verification for screenshot-master.
 #
 # Three independent signals, deliberately kept apart:
 #   unit                 - deterministic logic tests, no screen involved
@@ -148,11 +148,11 @@ jobs:
           set -x
           sw_vers
           uname -m
-          file native/macos/build/dsh-screenshot-helper
+          file native/macos/build/screenshot-helper
           echo "--- screen recording preflight ---"
-          ./native/macos/build/dsh-screenshot-helper permission || true
+          ./native/macos/build/screenshot-helper permission || true
           echo "--- shareable content ---"
-          ./native/macos/build/dsh-screenshot-helper list | head -c 4000 || true
+          ./native/macos/build/screenshot-helper list | head -c 4000 || true
 
       - name: 'macOS real-capture integration tests (Test A: screen, Test B: window)'
         shell: bash

@@ -37,7 +37,7 @@ import type {
 
 /** Compiled helper location; `scripts/build-macos-helper.sh` writes it there. */
 export const DEFAULT_HELPER_PATH = fileURLToPath(
-  new URL('../../native/macos/build/dsh-screenshot-helper', import.meta.url),
+  new URL('../../native/macos/build/screenshot-helper', import.meta.url),
 )
 
 export const HELPER_BUILD_COMMAND = 'npm run build:native:macos'
@@ -117,7 +117,7 @@ export function parseMacosWindow(value: unknown): WindowInfo {
   }
 }
 
-/** Parse the JSON printed by `dsh-screenshot-helper list`. */
+/** Parse the JSON printed by `screenshot-helper list`. */
 export function parseMacosListPayload(payload: unknown): ListTargetsResult {
   const record = asRecord(payload)
   if (record.ok !== true) throw structuredNativeFailure(record.error)
