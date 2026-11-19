@@ -223,7 +223,8 @@ builds that shape in [`src/toolkit.ts`](./src/toolkit.ts).
 
 **OpenCode 2.x.** The server part is the default export `{ id, setup }`. `setup(ctx)` runs on load, registers tools
 with `ctx.tool.transform((editor) => editor.add(tool))`, and may return a cleanup function. Tool shape:
-`{ name, description, input, options, execute }`, where `execute` returns `{ content, output }`. The adapter lives in
+`{ name, description, input, options, execute }`, where `execute` returns `{ content }` and no `output`, because a
+tool without an output schema may not return one. The adapter lives in
 [`src/hosts/opencode.ts`](./src/hosts/opencode.ts) and imports no OpenCode package; the types it needs are declared
 locally.
 

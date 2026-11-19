@@ -31,8 +31,14 @@ export interface OpencodeTextContent {
   readonly text: string
 }
 
+/**
+ * A tool result OpenCode accepts.
+ *
+ * `output` is deliberately absent: OpenCode rejects a result that carries
+ * `output` when the tool declares no output schema, and this adapter does not
+ * declare one. The model reads the text, not a structured payload.
+ */
 export interface OpencodeToolResult {
-  readonly output?: unknown
   readonly content?: string | readonly OpencodeTextContent[]
   readonly metadata?: Readonly<Record<string, unknown>>
 }
@@ -132,7 +138,7 @@ export function toOpencodeTool(definition: ToolDefinition): OpencodeTool {
           args,
           context?.signal ? { signal: context.signal } : {},
         )
-        return { output: value, content: renderResult(definition, args, value) }
+        return { content: renderResult(definition, args, value) }
       } catch (error) {
         throw toToolError(error)
       }
