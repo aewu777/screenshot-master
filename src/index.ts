@@ -11,18 +11,9 @@
  * side-effect free, so nothing touches the screen until a tool is called.
  */
 
-import { resolveConfig, type ScreenshotConfig } from './config.js'
-import {
-  createScreenshotService,
-  silentLogger,
-  type Logger,
-  type ScreenshotService,
-} from './capture.js'
-import {
-  SUPPORTED_PLATFORMS,
-  createBackendForPlatform,
-  isSupportedPlatform,
-} from './platforms/index.js'
+import { type ScreenshotConfig } from './config.js'
+import { silentLogger, type Logger, type ScreenshotService } from './capture.js'
+import { createRuntime } from './runtime.js'
 import { registerTools, type ToolRegistry } from './tools.js'
 
 export const name = 'dsh-screenshot-master'
@@ -98,23 +89,14 @@ export function setup(
     throw new Error('dsh-screenshot-master: the plugin context has no tool registry (ctx.tools.register).')
   }
 
-  const config = resolveConfig(rawConfig ?? {})
   const logger = createPluginLogger(ctx)
   const platform = options.platform ?? process.platform
 
-  if (!isSupportedPlatform(platform)) {
-    logger.warn(
-      `screenshot capture is not supported on ${platform}; the tools are registered but every call will fail with UNSUPPORTED_PLATFORM. Supported platforms: ${SUPPORTED_PLATFORMS.join(', ')}.`,
-    )
-  }
-
-  const service =
-    options.service ??
-    createScreenshotService({
-      backend: createBackendForPlatform(config, platform),
-      config,
-      logger,
-    })
+  const { service, config } = createRuntime(rawConfig ?? {}, {
+    platform,
+    logger,
+    ...(options.service ? { service: options.service } : {}),
+  })
 
   const dispose = registerTools({ tools: ctx.tools, service, logger })
   logger.info(
