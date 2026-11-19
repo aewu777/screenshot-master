@@ -1,4 +1,4 @@
-// dsh-screenshot-master native helper for macOS.
+// screenshot-master native helper for macOS.
 //
 // A small, single-purpose command-line tool that exposes ScreenCaptureKit to the
 // Node.js plugin. It owns native target enumeration and still-image capture and
@@ -8,10 +8,10 @@
 // Protocol (documented in README.md): every invocation prints exactly one JSON
 // object on stdout and exits 0 on success or 1 on failure.
 //
-//   dsh-screenshot-helper list
-//   dsh-screenshot-helper capture-screen --out <path> [--display <display-id>]
-//   dsh-screenshot-helper capture-window --out <path> --id <cgwindowid>
-//   dsh-screenshot-helper permission
+//   screenshot-helper list
+//   screenshot-helper capture-screen --out <path> [--display <display-id>]
+//   screenshot-helper capture-window --out <path> --id <cgwindowid>
+//   screenshot-helper permission
 //
 // Build: scripts/build-macos-helper.sh (requires the Xcode command line tools).
 // Minimum supported macOS: 14.0 (SCScreenshotManager).
@@ -451,7 +451,7 @@ func runHelper(arguments: [String]) async {
     guard let command = arguments.first else {
         emitFailure(
             "INVALID_ARGUMENT",
-            "usage: dsh-screenshot-helper <list|capture-screen|capture-window|permission> [options]"
+            "usage: screenshot-helper <list|capture-screen|capture-window|permission> [options]"
         )
     }
 

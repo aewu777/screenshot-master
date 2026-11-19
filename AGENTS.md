@@ -52,6 +52,10 @@ npm run check      # workflow + typecheck + lint + build + unit
   schemas into an adapter.
 - **Adapters map, they do not decide.** Config, validation, errors, and rendering stay in the core.
 - **Error codes are a public contract.** Do not rename or reuse a `ScreenshotErrorCode`; add a new one instead.
+- **Filenames carry the application, nothing else.** `<app>-<timestamp>-<attempt>-<random>.png`; screen captures use
+  `desktop`. Never reintroduce a `screen`, `window`, or `displayN` prefix.
+- **Defaults follow the OS.** Windows writes to `Pictures/Screenshots`, macOS to the Desktop; do not invent a new
+  default directory.
 - **No shells.** Pass native arguments as arrays to `spawn`/`execFile` with `shell: false`. Never build a command
   string from a path, title, or user input.
 - **No new native work at startup.** Registration is side-effect free; a capture happens only in a tool call.

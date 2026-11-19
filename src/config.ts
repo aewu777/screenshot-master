@@ -12,7 +12,8 @@ import path from 'node:path'
 export interface ScreenshotConfig {
   /**
    * Directory that receives the PNG files. Absolute, or relative to the
-   * workspace/current directory. Defaults to `<DSH_HOME>/screenshots`.
+   * workspace/current directory. Defaults to the host's screenshot folder:
+   * `Pictures/Screenshots` on Windows, the Desktop on macOS.
    */
   outputDir: string
   /** Disable the desktop-region fallback for Windows window capture. */
@@ -47,10 +48,19 @@ export const CONFIG_KEYS: readonly (keyof ScreenshotConfig)[] = [
   'macosHelperDir',
 ]
 
-/** Directory the plugin writes screenshots to when nothing is configured. */
-export function defaultOutputDir(env: NodeJS.ProcessEnv = process.env): string {
-  const home = env.DSH_HOME?.trim() || path.join(os.homedir(), '.dsh')
-  return path.join(home, 'screenshots')
+/**
+ * Directory the plugin writes screenshots to when nothing is configured.
+ *
+ * The host's own screenshot folder: `Pictures/Screenshots` on Windows, the
+ * Desktop on macOS (the system default for `screencapture`).
+ */
+export function defaultOutputDir(
+  env: NodeJS.ProcessEnv = process.env,
+  platform: string = process.platform,
+): string {
+  const home = env.USERPROFILE?.trim() || env.HOME?.trim() || os.homedir()
+  if (platform === 'darwin') return path.join(home, 'Desktop')
+  return path.join(home, 'Pictures', 'Screenshots')
 }
 
 function pickString(value: unknown): string {
@@ -112,13 +122,14 @@ function clampTimeout(value: unknown, fallback: number): number {
 export function resolveConfig(
   raw: Record<string, unknown> = {},
   env: NodeJS.ProcessEnv = process.env,
+  platform: string = process.platform,
 ): ScreenshotConfig {
   const source = raw ?? {}
 
   const outputDirRaw =
     pickString(source.outputDir) ||
     pickString(env.DSH_SCREENSHOT_OUTPUT_DIR) ||
-    defaultOutputDir(env)
+    defaultOutputDir(env, platform)
 
   const explicitMacosHelper =
     pickString(source.macosHelperPath) || pickString(env.DSH_SCREENSHOT_MACOS_HELPER)

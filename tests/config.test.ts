@@ -4,13 +4,20 @@ import path from 'node:path'
 import { expandPath, defaultOutputDir, resolveConfig } from '../src/config.js'
 
 describe('config defaults', () => {
-  it('writes to <DSH_HOME>/screenshots by default', () => {
-    const config = resolveConfig({}, { DSH_HOME: path.join(os.tmpdir(), 'dshhome') })
-    expect(config.outputDir).toBe(path.join(os.tmpdir(), 'dshhome', 'screenshots'))
+  it('writes to Pictures/Screenshots on Windows', () => {
+    const home = path.join(os.tmpdir(), 'home')
+    const config = resolveConfig({}, { USERPROFILE: home, HOME: home }, 'win32')
+    expect(config.outputDir).toBe(path.join(home, 'Pictures', 'Screenshots'))
   })
 
-  it('falls back to ~/.dsh/screenshots without DSH_HOME', () => {
-    expect(defaultOutputDir({})).toBe(path.join(os.homedir(), '.dsh', 'screenshots'))
+  it('writes to the Desktop on macOS', () => {
+    const home = path.join(os.tmpdir(), 'home')
+    expect(defaultOutputDir({ HOME: home }, 'darwin')).toBe(path.join(home, 'Desktop'))
+  })
+
+  it('falls back to the platform screenshot folder without an explicit output dir', () => {
+    const home = path.join(os.tmpdir(), 'home')
+    expect(defaultOutputDir({ HOME: home }, 'linux')).toBe(path.join(home, 'Pictures', 'Screenshots'))
   })
 
   it('enables the window fallback and rejects uniform images by default', () => {

@@ -105,7 +105,7 @@ const WINDOW_PAYLOAD = JSON.stringify({
   notes: [],
 })
 
-const FAKE_HELPER = '/opt/dsh/dsh-screenshot-helper'
+const FAKE_HELPER = '/opt/dsh/screenshot-helper'
 
 describe('helper resolution', () => {
   it('prefers an explicit path', () => {

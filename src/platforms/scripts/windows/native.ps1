@@ -1,4 +1,4 @@
-# Shared Win32 interop for the dsh-screenshot-master Windows backend.
+# Shared Win32 interop for the screenshot-master Windows backend.
 #
 # Dot-sourced by capture.ps1 and list-windows.ps1. Nothing here writes to the
 # pipeline by accident: every helper either returns a value or writes to a

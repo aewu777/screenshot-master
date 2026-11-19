@@ -28,9 +28,9 @@ describe('filename derivation', () => {
   it('turns a window title into a short filesystem-safe label', () => {
     expect(sanitizeLabel('Plugin prompt file — DeepSeek Harness')).toBe('plugin-prompt-file-deepseek-harness')
     expect(sanitizeLabel('../../etc/passwd')).toBe('etc-passwd')
-    expect(sanitizeLabel('Зачем мы спрятались в Джунглях?!')).toBe('window')
-    expect(sanitizeLabel('   ')).toBe('window')
-    expect(sanitizeLabel(undefined, 'window')).toBe('window')
+    expect(sanitizeLabel('Зачем мы спрятались в Джунглях?!')).toBe('screenshot')
+    expect(sanitizeLabel('   ')).toBe('screenshot')
+    expect(sanitizeLabel(undefined, 'fallback')).toBe('fallback')
   })
 
   it('truncates very long titles', () => {
@@ -38,9 +38,15 @@ describe('filename derivation', () => {
     expect(label.length).toBeLessThanOrEqual(40)
   })
 
-  it('builds a PNG name that carries kind, label, time and attempt', () => {
-    const name = buildFileName({ kind: 'window', label: 'Notepad', at: AT, attempt: 3, random: 'abcd' })
-    expect(name).toMatch(/^window-notepad-\d{8}-\d{6}-\d{3}-03-abcd\.png$/)
+  it('builds a PNG name that carries app, time and attempt, with no capture-type prefix', () => {
+    const name = buildFileName({ label: 'firefox', at: AT, attempt: 3, random: 'abcd' })
+    expect(name).toMatch(/^firefox-\d{8}-\d{6}-\d{3}-03-abcd\.png$/)
+    expect(name).not.toMatch(/window|screen|display/)
+  })
+
+  it('uses a generic label when none is given', () => {
+    const name = buildFileName({ at: AT, attempt: 0, random: 'abcd' })
+    expect(name).toMatch(/^screenshot-\d{8}-\d{6}-\d{3}-00-abcd\.png$/)
   })
 
   it('produces unique tokens', () => {
@@ -52,7 +58,7 @@ describe('filename derivation', () => {
     const directory = path.join(os.tmpdir(), 'shots')
     const partial = partialPath(directory, 'abc123')
     expect(path.dirname(partial)).toBe(directory)
-    expect(path.basename(partial)).toBe('.dsh-screenshot-abc123.partial')
+    expect(path.basename(partial)).toBe('.screenshot-abc123.partial')
   })
 })
 
@@ -106,7 +112,6 @@ describe('committing a screenshot', () => {
       const data = Buffer.from('png-bytes')
       const result = await commitScreenshot({
         outputDir: temp.path,
-        kind: 'screen',
         data,
         at: AT,
         random: () => 'abcd',
@@ -123,13 +128,12 @@ describe('committing a screenshot', () => {
   it('never overwrites an existing file; it picks the next name', async () => {
     const temp = await makeTempDirectory()
     try {
-      const taken = buildFileName({ kind: 'screen', at: AT, attempt: 0, random: 'abcd' })
+      const taken = buildFileName({ at: AT, attempt: 0, random: 'abcd' })
       const takenPath = path.join(temp.path, taken)
       await fs.writeFile(takenPath, 'original')
 
       const result = await commitScreenshot({
         outputDir: temp.path,
-        kind: 'screen',
         data: Buffer.from('second'),
         at: AT,
         random: () => 'abcd',
@@ -148,13 +152,12 @@ describe('committing a screenshot', () => {
     const temp = await makeTempDirectory()
     try {
       for (let attempt = 0; attempt < MAX_NAME_ATTEMPTS; attempt += 1) {
-        const name = buildFileName({ kind: 'screen', at: AT, attempt, random: 'abcd' })
+        const name = buildFileName({ at: AT, attempt, random: 'abcd' })
         await fs.writeFile(path.join(temp.path, name), 'taken')
       }
       await expect(
         commitScreenshot({
           outputDir: temp.path,
-          kind: 'screen',
           data: Buffer.from('x'),
           at: AT,
           random: () => 'abcd',
@@ -177,7 +180,6 @@ describe('committing a screenshot', () => {
       await expect(
         commitScreenshot({
           outputDir: temp.path,
-          kind: 'screen',
           data: Buffer.from('x'),
           at: AT,
           random: () => 'abcd',
@@ -198,7 +200,6 @@ describe('committing a screenshot', () => {
       await expect(
         commitScreenshot({
           outputDir: temp.path,
-          kind: 'screen',
           data: Buffer.from('x'),
           at: AT,
           random: () => 'abcd',
@@ -219,7 +220,6 @@ describe('committing a screenshot', () => {
       await fs.mkdir(directory, { recursive: true })
       const result = await commitScreenshot({
         outputDir: directory,
-        kind: 'window',
         label: 'Блокнот',
         data: Buffer.from('x'),
         at: AT,

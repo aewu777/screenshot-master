@@ -521,7 +521,7 @@ describe('output files', () => {
   it('picks a different name when the first candidate exists', async () => {
     await withHarness(
       async ({ service, outputDir }) => {
-        const taken = buildFileName({ kind: 'screen', label: 'display0', at: AT, attempt: 0, random: 'fixed' })
+        const taken = buildFileName({ label: 'desktop', at: AT, attempt: 0, random: 'token0002' })
         await fs.writeFile(path.join(outputDir, taken), 'existing')
 
         const result = await service.captureScreen()

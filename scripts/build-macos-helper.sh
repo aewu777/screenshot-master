@@ -9,9 +9,9 @@
 set -eu
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-SOURCE="$ROOT/native/macos/DSHScreenshotHelper.swift"
+SOURCE="$ROOT/native/macos/ScreenshotHelper.swift"
 OUTPUT_DIR="$ROOT/native/macos/build"
-OUTPUT="$OUTPUT_DIR/dsh-screenshot-helper"
+OUTPUT="$OUTPUT_DIR/screenshot-helper"
 
 if [ "$(uname -s)" != "Darwin" ]; then
     echo "build-macos-helper: this script only runs on macOS (current: $(uname -s))" >&2

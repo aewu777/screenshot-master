@@ -1,5 +1,5 @@
 /**
- * dsh-screenshot-master — cross-platform screenshot capture for DeepSeek Harness.
+ * screenshot-master — cross-platform screenshot capture for DeepSeek Harness.
  *
  * Entry point for the Cordis plugin lifecycle:
  *   - resolve configuration from the plugin row and the environment,
@@ -16,7 +16,7 @@ import { silentLogger, type Logger, type ScreenshotService } from './capture.js'
 import { createRuntime } from './runtime.js'
 import { registerTools, type ToolRegistry } from './tools.js'
 
-export const name = 'dsh-screenshot-master'
+export const name = 'screenshot-master'
 
 /** The only harness service this plugin needs. */
 export const inject = ['tools']
@@ -86,7 +86,7 @@ export function setup(
   options: SetupOptions = {},
 ): SetupResult {
   if (!ctx || typeof ctx !== 'object' || !ctx.tools || typeof ctx.tools.register !== 'function') {
-    throw new Error('dsh-screenshot-master: the plugin context has no tool registry (ctx.tools.register).')
+    throw new Error('screenshot-master: the plugin context has no tool registry (ctx.tools.register).')
   }
 
   const logger = createPluginLogger(ctx)
@@ -116,7 +116,7 @@ export function apply(ctx: PluginContext, rawConfig: Record<string, unknown> = {
   const { dispose } = setup(ctx, rawConfig ?? {})
 
   if (typeof ctx.effect === 'function') {
-    ctx.effect(() => dispose, 'dsh-screenshot-master: tools')
+    ctx.effect(() => dispose, 'screenshot-master: tools')
     return
   }
 

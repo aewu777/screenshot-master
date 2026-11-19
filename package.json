@@ -1,8 +1,8 @@
 {
-  "name": "dsh-screenshot-master",
+  "name": "screenshot-master",
   "version": "0.2.0",
   "private": true,
-  "description": "Cross-platform full-screen and per-window screenshot capture for DeepSeek Harness and OpenCode (Windows 10/11 and macOS 14+). Saves PNG files and returns their absolute paths.",
+  "description": "Cross-platform screenshot tools for DeepSeek Harness and OpenCode: capture the full screen, one display, or one window, save a PNG, and return its absolute path (Windows 10/11 and macOS 14+).",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -24,7 +24,7 @@
   },
   "files": [
     "lib/",
-    "native/macos/DSHScreenshotHelper.swift",
+    "native/macos/ScreenshotHelper.swift",
     "scripts/build-macos-helper.sh",
     "cordis.patch.yml",
     "README.md"
