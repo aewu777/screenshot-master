@@ -31,7 +31,7 @@ export interface TempDirectory {
 }
 
 /** Create a unique directory under the OS temp area and remove it afterwards. */
-export async function makeTempDirectory(prefix = 'dsh-screenshot-'): Promise<TempDirectory> {
+export async function makeTempDirectory(prefix = 'screenshot-'): Promise<TempDirectory> {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), prefix))
   return {
     path: directory,
