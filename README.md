@@ -1,8 +1,16 @@
 # screenshot-master
 
-Screenshot capture for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) and
-[OpenCode](https://opencode.ai). Captures the full screen, one display, or one application window, saves a PNG, and
-returns its absolute path with capture metadata. It never opens, analyses, uploads, or attaches the image.
+[![Tests](https://github.com/aewu777/screenshot-master/actions/workflows/tests.yml/badge.svg)](https://github.com/aewu777/screenshot-master/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Node.js >= 22](https://img.shields.io/badge/node-%3E%3D22-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Platforms: Windows | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-lightgrey)](#platform-notes)
+[![XERJ Corpus Hub contributor](https://hub.xerj.org/contributors/aewu777/badge.svg)](https://hub.xerj.org/contributors/aewu777)
+
+Screenshot capture for AI agent harnesses. It captures the full screen, one display, or one application window,
+saves a PNG, and returns its absolute path with capture metadata. It never opens, analyses, uploads, or attaches the
+image.
+
+Ships as a DeepSeek Harness bundle and an OpenCode plugin; the capture core is host-neutral.
 
 Windows 10/11 and macOS 14+. Linux is not supported.
 
